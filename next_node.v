@@ -29,6 +29,53 @@ reg [1:0] next_state;
 reg [3:0] timer;          // Down counter
 reg timer_done;     // Goes HIGH when timer hits 0
 reg [3:0] load_val;       // Value to load into timer
+
+ always @(*) begin
+        // Safe defaults — all RED (fail-safe)
+        N_sig = RED;
+        S_sig = RED;
+        E_sig = RED;
+        W_sig = RED;
+
+        case (current_state)
+
+            S0 : begin  // NS Green, EW Red
+                N_sig = GREEN;
+                S_sig = GREEN;
+                E_sig = RED;
+                W_sig = RED;
+            end
+
+            S1 : begin  // NS Yellow, EW Red
+                N_sig = YELLOW;
+                S_sig = YELLOW;
+                E_sig = RED;
+                W_sig = RED;
+            end
+
+            S2 : begin  // EW Green, NS Red
+                N_sig = RED;
+                S_sig = RED;
+                E_sig = GREEN;
+                W_sig = GREEN;
+            end
+
+            S3 : begin  // EW Yellow, NS Red
+                N_sig = RED;
+                S_sig = RED;
+                E_sig = YELLOW;
+                W_sig = YELLOW;
+            end
+
+            default : begin  // All RED — safe state
+                N_sig = RED;
+                S_sig = RED;
+                E_sig = RED;
+                W_sig = RED;
+            end
+
+        endcase
+    end
     
 always @(posedge clk) begin
         if (rst) begin
@@ -122,52 +169,7 @@ always @(posedge clk) begin
 
         endcase
     end
-    always @(*) begin
-        // Safe defaults — all RED (fail-safe)
-        N_sig = RED;
-        S_sig = RED;
-        E_sig = RED;
-        W_sig = RED;
-
-        case (current_state)
-
-            S0 : begin  // NS Green, EW Red
-                N_sig = GREEN;
-                S_sig = GREEN;
-                E_sig = RED;
-                W_sig = RED;
-            end
-
-            S1 : begin  // NS Yellow, EW Red
-                N_sig = YELLOW;
-                S_sig = YELLOW;
-                E_sig = RED;
-                W_sig = RED;
-            end
-
-            S2 : begin  // EW Green, NS Red
-                N_sig = RED;
-                S_sig = RED;
-                E_sig = GREEN;
-                W_sig = GREEN;
-            end
-
-            S3 : begin  // EW Yellow, NS Red
-                N_sig = RED;
-                S_sig = RED;
-                E_sig = YELLOW;
-                W_sig = YELLOW;
-            end
-
-            default : begin  // All RED — safe state
-                N_sig = RED;
-                S_sig = RED;
-                E_sig = RED;
-                W_sig = RED;
-            end
-
-        endcase
-    end
+   
 
 endmodule
 
